@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react"
 import { SEGMENT_SIZE } from "../Draw/Draw";
 import randomPositionOnGrid from "../Utils/randomPositionOnGrid";
 import useInterval from "../Utils/useInterval";
-import createSnakeMovement, { willSnakeHitTheFood } from "./Movement";
+import { GameState } from "./Game";
+import createSnakeMovement, { hasSnakeEatenItself, willSnakeHitTheFood } from "./Movement";
 
 export interface Position{
     x: number;
@@ -21,9 +22,11 @@ const MOVEMENT_SPEED = 100;
 interface UseGameLogicArgs {
     canvasWidth?: number;
     canvasHeight?: number;
+    onGameOver: () => void;
+    gameState: GameState;
 }
 
-const useGameLogic = ({canvasHeight, canvasWidth}: UseGameLogicArgs) => {
+const useGameLogic = ({canvasHeight, canvasWidth, onGameOver, gameState}: UseGameLogicArgs) => {
 
     const [direction, setDirection] = useState<Direction>();
 
@@ -33,6 +36,19 @@ const useGameLogic = ({canvasHeight, canvasWidth}: UseGameLogicArgs) => {
         y:0,
      },
     ]);
+
+    const resetGameState = () => {
+        setDirection(undefined);
+        setFoodPosition({
+            x: randomPositionOnGrid({gridSize: SEGMENT_SIZE, threshold: canvasWidth!}),
+            y: randomPositionOnGrid({gridSize: SEGMENT_SIZE, threshold: canvasHeight!}),
+        });
+
+        setSnakeBody([{
+            x: randomPositionOnGrid({gridSize: SEGMENT_SIZE, threshold: canvasWidth!}),
+            y: randomPositionOnGrid({gridSize: SEGMENT_SIZE, threshold: canvasHeight!}),
+        }]);
+    }
 
     const [foodPosition, setFoodPosition] = useState<Position | undefined>();
 
@@ -89,28 +105,28 @@ const useGameLogic = ({canvasHeight, canvasWidth}: UseGameLogicArgs) => {
                 if (snakeHeadPosition.y > 0){
                 snakeBodyAfterMovement = moveUp(snakeBody);
                 } else{
-                    alert('YOU HIT A WALL. GAME OVER!');
+                    onGameOver();
                 }
                 break;
             case Direction.DOWN:
                 if (canvasHeight && snakeHeadPosition.y < canvasHeight - SEGMENT_SIZE ){
                 snakeBodyAfterMovement = moveDown(snakeBody);
                 } else{
-                    alert('YOU HIT A WALL. GAME OVER!')
+                    onGameOver();
                 }
                 break;
             case Direction.LEFT:
                 if (snakeHeadPosition.x > 0){
                 snakeBodyAfterMovement = moveLeft(snakeBody);
                 }else{
-                    alert('YOU HIT A WALL. GAME OVER!');
+                    onGameOver();
                 }
                 break;
             case Direction.RIGHT:
                 if (canvasWidth && snakeHeadPosition.x < canvasWidth - SEGMENT_SIZE){
                 snakeBodyAfterMovement = moveRight(snakeBody);
                 } else{
-                    alert('YOU HIT A WALL. GAME OVER!');
+                    onGameOver();
                 }
                 break;
         }
@@ -118,6 +134,9 @@ const useGameLogic = ({canvasHeight, canvasWidth}: UseGameLogicArgs) => {
         //snake hits itself
         if(snakeBodyAfterMovement){
             const isGameOver = hasSnakeEatenItself(snakeBodyAfterMovement);
+            if(isGameOver){
+                onGameOver();
+            }
         }
 
         if (direction !== undefined && foodPosition && willSnakeHitTheFood({
@@ -141,12 +160,13 @@ const useGameLogic = ({canvasHeight, canvasWidth}: UseGameLogicArgs) => {
         }
     };
 
-    useInterval(moveSnake, MOVEMENT_SPEED);
+    useInterval(moveSnake, gameState === GameState.RUNNING ? MOVEMENT_SPEED: null);
     
     return{
         snakeBody,
         onKeyDownHandler,
         foodPosition,
+        resetGameState,
     };
 };
 
