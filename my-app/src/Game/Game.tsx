@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Canvas from '../Canvas/Canvas';
 import draw from "../Draw/Draw";
-import { GameWrapper } from "./Game.styles";
+import { GameWrapper, Score } from "./Game.styles";
 import useGameLogic from "./useGameLogic";
 
 interface GameProps {}
@@ -42,6 +42,7 @@ const Game: React.FC<GameProps> = ({}) => {
         ) : <button onClick={() => {
             setGameState(gameState === GameState.RUNNING ? GameState.PAUSE: GameState.RUNNING )
         }}>{gameState === GameState.RUNNING ? 'Pause' : 'Play'}</button> }
+        <Score>{`Your Score: ${(snakeBody.length - 1) * 10}`}</Score>
     </GameWrapper>
     );
 };
