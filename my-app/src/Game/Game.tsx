@@ -21,8 +21,8 @@ const Game: React.FC<GameProps> = ({}) => {
     const onGameOver = () => setGameState(GameState.GAME_OVER)
 
     const { snakeBody, onKeyDownHandler, foodPosition, resetGameState } = useGameLogic({
-        canvasHeight: canvasRef.current?.height,
-        canvasWidth: canvasRef.current?.width,
+        canvasHeight: 150,
+        canvasWidth: 300,
         onGameOver,
         gameState
     });
