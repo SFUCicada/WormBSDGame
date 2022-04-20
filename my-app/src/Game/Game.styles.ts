@@ -13,3 +13,7 @@ export const Score = styled.h1`
     --webkit-background-clip: text;
     --webkit-text-fill-color: transparent;
 `;
+
+export const Welcome = styled.h3`
+    color: white;
+`;

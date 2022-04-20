@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Canvas from '../Canvas/Canvas';
 import draw from "../Draw/Draw";
-import { GameWrapper, Score } from "./Game.styles";
+import { GameWrapper, Score, Welcome } from "./Game.styles";
 import useGameLogic from "./useGameLogic";
 
 interface GameProps {}
@@ -43,6 +43,8 @@ const Game: React.FC<GameProps> = ({}) => {
             setGameState(gameState === GameState.RUNNING ? GameState.PAUSE: GameState.RUNNING )
         }}>{gameState === GameState.RUNNING ? 'Pause' : 'Play'}</button> }
         <Score>{`Your Score: ${(snakeBody.length - 1) * 10}`}</Score>
+        <Welcome>Hello and Welcome to Worm. To Win: Collect as Many Apples as You Can.</Welcome>
+        <Welcome>Controls: Move using 'HJKL'. Avoid Colliding with Yourself or the Walls as this Will End the Game.</Welcome>
     </GameWrapper>
     );
 };

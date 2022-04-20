@@ -74,22 +74,22 @@ const useGameLogic = ({canvasHeight, canvasWidth, onGameOver, gameState}: UseGam
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         switch (event.code) {
-            case 'KeyS':
+            case 'KeyJ':
                 if (direction != Direction.UP){
                 setDirection(Direction.DOWN);
                 }
                 break;
-            case 'KeyW':
+            case 'KeyK':
                 if (direction != Direction.DOWN){
                 setDirection(Direction.UP)
                 }
                 break;
-            case 'KeyA':
+            case 'KeyH':
                 if (direction != Direction.RIGHT){
                 setDirection(Direction.LEFT)
                 }
                 break;
-            case 'KeyD':
+            case 'KeyL':
                 if (direction != Direction.LEFT){
                 setDirection(Direction.RIGHT)
                 }
